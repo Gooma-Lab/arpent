@@ -1,0 +1,7 @@
+# Development happens on Windows, the container runs Linux. Normalise line
+# endings in the repository so nothing arrives in the image with CRLF.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
