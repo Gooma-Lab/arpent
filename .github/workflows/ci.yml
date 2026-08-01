@@ -17,12 +17,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v9
         with:
           enable-cache: true
+          # No uv.lock yet — it appears the first time `uv sync` runs locally,
+          # and should be committed then. Until it exists the cache keys off
+          # the manifest instead.
+          cache-dependency-glob: "pyproject.toml"
 
       - name: Install the pinned interpreter and dependencies
         run: uv sync --all-groups
@@ -46,12 +50,22 @@ jobs:
 
   secrets:
     runs-on: ubuntu-latest
+    env:
+      # The official action is free for personal repositories but requires a
+      # paid licence for organisation-owned ones. The binary is MIT and needs
+      # neither, so we pin it and run it directly.
+      GITLEAKS_VERSION: 8.30.1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: No plaintext key in the diff (gate 3)
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install gitleaks
+        run: |
+          curl -sSfL \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz gitleaks
+          ./gitleaks version
+
+      - name: No plaintext key in history (gate 3)
+        run: ./gitleaks git . --no-banner --redact --exit-code 1
