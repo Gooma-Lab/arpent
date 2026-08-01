@@ -1,0 +1,33 @@
+# Secrets — must never reach the repository (SECURITY.md §1)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Runtime output — traces are written locally by default (DATA.md §3, D6)
+data/traces/
+*.jsonl
+!evals/cases/*.jsonl
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
