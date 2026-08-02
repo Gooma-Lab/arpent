@@ -89,8 +89,9 @@ semaine de diffusion est le schéma d'échec classique.
 
 **Point de contrôle en semaine 6, ferme.** Si l'URL publique ne répond pas,
 l'ordre de réduction s'applique immédiatement, sans attendre un dérapage
-supplémentaire : Supabase, puis le connecteur GitHub, puis les replanifications
-ramenées à une, puis la route d'API.
+supplémentaire : le connecteur GitHub d'abord (v1 sur npm seul, limite affichée
+dans l'interface), puis les replanifications ramenées à une, puis la route
+d'API.
 
 **Jamais coupés** : l'URL publique, la validation d'instrument, la section
 « ce qui n'a pas pu être mesuré », la piste de diffusion.

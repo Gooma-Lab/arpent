@@ -110,7 +110,7 @@ Ajouter une source ne modifie que son connecteur. C'est ce qui permet à la v2 d
 | Modèle | Claude Sonnet 5 | Cohérence avec le projet 3 (MCP) |
 | Orchestration | SDK brut, pas de cadriciel | Écrire sa boucle fait mieux comprendre que l'assembler |
 | Hébergement | Hugging Face Spaces, **SDK Docker** | Gratuit, URL publique, canal reconnu — et le `Dockerfile` reste visible dans le dépôt |
-| Persistance | JSONL local, Supabase **optionnel** | Une clé absente ne doit jamais casser une exécution |
+| Persistance | JSONL poussé vers un jeu de données Hugging Face | Aucune base en v1 ; une clé absente ne doit jamais casser une exécution |
 
 **Sur l'absence de cadriciel** : les offres d'emploi citent LangChain. Le compromis est assumé — un candidat qui a écrit sa boucle explique mieux ses choix qu'un candidat qui a assemblé des briques. LangChain pourra être ajouté ensuite pour la couverture.
 
@@ -120,10 +120,16 @@ engineer citent — Docker, CI/CD, déploiement d'API. Gradio reste le cadre
 d'interface *dans* le conteneur : on ne perd rien et on gagne la portabilité
 vers Render si le palier gratuit se révèle insuffisant.
 
-**Sur la persistance** : le produit doit fonctionner sans base. Les traces
-partent en JSONL, poussées vers un jeu de données Hugging Face ; Supabase
-s'active par variable d'environnement. Une démonstration publique dont la base
-tombe en veille est une démonstration morte.
+**Sur la persistance — Supabase est écarté de la v1.** Il figurait dans la
+première pile par familiarité, pas par besoin. Les traces sont des lignes JSONL
+poussées vers un jeu de données Hugging Face : aucune base, aucune clé, aucune
+latence, un mode de panne en moins. Le palier gratuit de Supabase met par
+ailleurs un projet inactif en pause au bout d'une semaine, et une démonstration
+publique dont la base tombe en veille est une démonstration morte.
+
+La variable `ARPENT_STORE` reste la couture par laquelle une base entrerait si
+le projet 2 en révélait le besoin. Tant que ce besoin n'existe pas, il n'y a
+rien à installer.
 
 **Isolation du fournisseur de modèle** : tous les appels passent par une interface unique. Le projet 2 doit pouvoir brancher un second fournisseur sans réécriture, pour la comparaison chiffrée.
 
