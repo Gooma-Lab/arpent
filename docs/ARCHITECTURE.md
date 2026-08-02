@@ -137,10 +137,37 @@ Trois leviers, prévus dès la conception et non ajoutés après coup :
   centimes par exécution. Les trois sont pilotés par variables
   d'environnement, ce qui fait de l'écart Haiku/Sonnet sur le validateur un
   cas de mesure prêt à l'emploi pour le projet 2
-- **Cache d'invite** — les lectures en cache coûtent 10 % du prix d'entrée
+- **Cache d'invite** — une lecture en cache coûte 10 % du prix d'entrée, mais
+  une écriture en coûte 125 % (durée 5 min) ou 200 % (durée 1 h). Le cache
+  n'est donc rentable qu'à partir de la deuxième lecture. **Deux pièges
+  vérifiés** : le préfixe minimal cachable est de 1 024 jetons sur Sonnet 5
+  mais de **4 096 sur Haiku 4.5** — une invite plus courte n'est pas mise en
+  cache, *sans erreur ni avertissement* ; et la durée par défaut est de
+  5 minutes, ce qui ne survit pas entre deux visites espacées d'une démo
+  publique. Le cache sert donc **à l'intérieur d'une exécution** (le
+  validateur est appelé deux fois) et **pendant les rejeux du projet 2**, pas
+  entre visiteurs
 - **Traitement par lots** — 50 % de réduction, applicable aux évaluations du projet 2 qui ne sont jamais urgentes
+- **Comptage avant envoi** — l'endpoint de comptage de jetons est **gratuit**
+  et soumis à des limites de débit distinctes de celles de la génération. Le
+  plafond par exécution s'applique donc **avant** de payer, pas après avoir
+  constaté le dépassement
 
-Ces trois leviers sont eux-mêmes un objet de démonstration : savoir qu'une évaluation se lance en lot est un signal de praticien.
+Ces leviers sont eux-mêmes un objet de démonstration : savoir qu'une évaluation se lance en lot, ou qu'un cache mal dimensionné coûte 25 % de plus au lieu d'économiser 90 %, est un signal de praticien.
+
+**Ce qui conditionne réellement la facture**, par ordre d'effet mesuré :
+
+| Facteur | Effet | Levier |
+|---|---|---|
+| Taille de la charge utile envoyée au modèle | dominant | Projection de champs à la collecte : le modèle ne voit que nom, description tronquée, mots-clés, dates |
+| Taille de l'échantillon soumis au validateur | fort | 10 éléments suffisent à détecter une dérive ; 40 ne détectent pas quatre fois mieux |
+| Nombre de replanifications | ×1 à ×3 sur tout ce qui précède | Plafond à 2, déjà posé |
+| Invites système | fixe par appel | Cachables seulement au-delà du seuil du modèle |
+| Verbosité demandée en sortie | modéré | Référencer les paquets par indice plutôt que les redécrire |
+
+La règle qui les résume : **la frontière déterministe/modèle est aussi une
+frontière de coût.** Tout ce que la couche déterministe garde pour elle n'est
+jamais facturé.
 
 ## 7. Ce que l'architecture prépare pour le projet 2
 
@@ -148,6 +175,31 @@ Ces trois leviers sont eux-mêmes un objet de démonstration : savoir qu'une év
 - Le verdict est structuré, donc comparable automatiquement
 - L'interface fournisseur permet de rejouer les mêmes cas sur deux modèles
 - Une variante multi-agent sera implémentée **uniquement pour être mesurée** et démontrée inférieure
+
+**Cas de mesure déjà identifiés**, dans l'ordre d'intérêt :
+
+1. **Un modèle économique contre Sonnet 5 sur le validateur.** Gemini 2.5
+   Flash-Lite est à 0,10 $/0,40 $ par million de jetons contre 3 $/15 $ pour
+   Sonnet 5 — un facteur 30. La question est de savoir si le jugement de
+   pertinence sémantique tient à ce prix. Les mesures publiées sur les sorties
+   structurées montrent que la conformité au schéma est élevée sur les modèles
+   ouverts, mais que **l'exactitude des valeurs décroche** : c'est précisément
+   la dimension que le validateur exerce. Les deux issues sont exploitables —
+   s'il tient, c'est un résultat publiable ; s'il ne tient pas, la mesure
+   justifie l'architecture.
+2. Haiku 4.5 contre Sonnet 5 sur le validateur — même question, écart plus
+   faible, à l'intérieur d'une même famille de modèles.
+3. La variante multi-agent contre l'agent unique.
+
+Les trois sont accessibles sans écrire de code supplémentaire : le routage est
+piloté par variables d'environnement et tous les appels passent par
+l'interface fournisseur.
+
+**Note d'usage** : les paliers gratuits d'API n'ont pas leur place sur le
+chemin public — le plafond de Groq à 12 000 jetons par minute est inférieur à
+ce qu'une seule exécution consomme en entrée. Ils ont en revanche leur place
+dans les rejeux du projet 2, où la latence est indifférente et où le volume
+fait mordre l'écart de prix.
 
 ## 8. Ce qui est explicitement écarté
 

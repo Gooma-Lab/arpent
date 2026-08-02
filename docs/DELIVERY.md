@@ -73,7 +73,7 @@ semaine de diffusion est le schéma d'échec classique.
 | S | Constr. | Appr. | Diff. | Livrable |
 |---|---|---|---|---|
 | 1 | 6 h | 4 h | — | Comptes, dépôt, licence, Python 3.12, `uv`, `ruff`, `pytest`, CI verte |
-| 2 | 6 h | 4 h | — | Pydantic, HTTP, premier appel modèle, trace JSONL, coût affiché |
+| 2 | 6 h | 4 h | — | Pydantic, HTTP, premier appel modèle, trace JSONL, **comptabilité de jetons par étape** (entrée, sortie, écritures et lectures de cache, coût) — voir §10 |
 | 3 | 8 h | 2 h | — | Interface fournisseur, routage par variables d'environnement |
 | 4 | 9 h | 1 h | — | Connecteur npm, les trois règles de `DATA.md` §5 testées |
 | 5 | 8 h | 1 h | 1 h | **Boucle complète, npm seul, en CLI** + première note publique |
@@ -174,3 +174,36 @@ et sans aucune question de conditions d'utilisation.
 | Date | Réveil mesuré | Décision |
 |---|---|---|
 | — | *non mesuré* | *reportée à la semaine 6* |
+
+## 10. Budget de jetons — à mesurer, pas à supposer
+
+Les plafonds de conception (60 k jetons en entrée, 8 k en sortie par exécution)
+dérivent d'une estimation écrite **avant** tout code : ≈ 32 k en entrée et 6 k
+en sortie pour une analyse de niche. Cette estimation n'a jamais été validée.
+
+C'est le même défaut que celui qui a produit les deux mesures fausses à
+l'origine du projet — une valeur reprise sans avoir regardé l'instrument. Elle
+est donc traitée comme une hypothèse, pas comme une donnée.
+
+**Ce que la semaine 2 doit produire.** Chaque appel au modèle enregistre dans
+la trace : l'étape, le modèle, les jetons d'entrée, de sortie, d'écriture de
+cache et de lecture de cache, et le coût. Une commande `arpent cost` restitue
+la ventilation par étape.
+
+**Ce que la semaine 11 doit produire.** Ce tableau, rempli — avant et après
+optimisation — et repris dans le README. Une ventilation mesurée du budget de
+jetons d'un agent est un artefact rare ; c'est aussi la seule façon honnête de
+parler d'optimisation.
+
+| Étape | Modèle | Entrée | Sortie | Part du coût |
+|---|---|---|---|---|
+| PLANIFIER | Haiku 4.5 | — | — | — |
+| VALIDER | Sonnet 5 | — | — | — |
+| SYNTHÉTISER | Sonnet 5 | — | — | — |
+
+**Point de vigilance vérifié** : le préfixe minimal cachable est de 4 096
+jetons sur Haiku 4.5. Une invite système plus courte n'est pas mise en cache et
+l'API ne signale rien — il faut lire `cache_creation_input_tokens` et
+`cache_read_input_tokens` dans la réponse pour le constater. La comptabilité de
+la semaine 2 doit donc enregistrer ces deux champs, faute de quoi on croira
+utiliser un cache inexistant.

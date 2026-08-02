@@ -59,9 +59,24 @@ règle de `DESIGN.md` §6, et les deux documents disaient l'inverse l'un de
 l'autre jusqu'à cette correction. Un refus sec est un échec silencieux
 déguisé — l'usager ne sait pas ce qui a été mesuré avant l'arrêt.
 
-**Budget total prévu** : 65 à 150 $ sur quatre mois, tous projets confondus. Le poste dominant n'est pas l'agent mais la suite d'évaluation du projet 2, qui rejoue les mêmes cas des dizaines de fois.
+**Budget du projet 1** : **30 à 50 $**, révisé à la hausse pour deux raisons.
+Le validateur tourne sur Sonnet 5 et non sur le modèle économique — c'est
+l'étape qui porte la valeur du projet. Et le tarif de Sonnet 5 à 2 $/10 $ est
+**promotionnel jusqu'au 31 août 2026** : les semaines 5 à 12 seront facturées
+3 $/15 $, soit 50 % de plus. Prépaiement à prévoir : **50 $**.
 
-Leviers de réduction, prévus dès la conception : routage vers un modèle économique, cache d'invite (10 % du prix d'entrée sur les lectures en cache), traitement par lots (50 % de réduction) pour les évaluations.
+**Budget total** : 65 à 150 $ sur quatre mois, tous projets confondus. Le poste dominant n'est pas l'agent mais la suite d'évaluation du projet 2, qui rejoue les mêmes cas des dizaines de fois.
+
+⚠️ **L'estimation par exécution n'a jamais été mesurée.** Les chiffres de
+départ (≈ 32 k jetons en entrée, 6 k en sortie) viennent d'une estimation
+antérieure au code. Ils fondent les plafonds de D14 sans les valider — c'est
+exactement le défaut d'instrument que ce projet existe pour corriger, appliqué
+à son propre budget. La semaine 2 doit donc produire une mesure réelle par
+étape, et cette ligne sera remplacée par elle.
+
+Leviers de réduction, prévus dès la conception et détaillés dans
+`ARCHITECTURE.md` §6 : routage, cache d'invite, traitement par lots, et
+comptage gratuit avant envoi pour appliquer le plafond sans le payer.
 
 ## 5. Risque de réputation
 
