@@ -9,6 +9,7 @@ license = { file = "LICENSE" }
 # Dependencies arrive when the code that needs them arrives: anthropic in
 # week 3, httpx with the npm connector in week 4, gradio in week 6.
 dependencies = [
+    "anthropic>=0.120.2",
     "pydantic>=2.9",
     "pydantic-settings>=2.5",
 ]
@@ -39,3 +40,6 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "wip: a skeleton whose bodies are not written yet; deselected in CI",
+]
