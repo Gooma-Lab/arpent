@@ -176,6 +176,31 @@ et sans aucune question de conditions d'utilisation.
 |---|---|---|
 | — | *non mesuré* | *reportée à la semaine 6* |
 
+## 12. Décision reportée à la semaine 9 — le validateur mérite-t-il Sonnet 5 ?
+
+Le validateur pèse environ 40 % de la facture de jetons. Sa nécessité est
+établie — la sonde du 2 août montre trois intrus sur huit résultats pour la
+requête `wiki`, capables d'inverser une mesure de distribution. Ce qui n'est
+**pas** établi, c'est la **fréquence** de cette contamination. Quatre requêtes
+ne mesurent pas un taux.
+
+Le taux de replanification observé sur le jeu de cas de référence le donnera.
+Règle écrite d'avance, pour qu'elle ne soit pas négociée après coup :
+
+| Taux de replanification | Lecture | Décision |
+|---|---|---|
+| **< 10 %** | La dérive est rare sur npm ; Sonnet 5 n'est pas justifié à ce poste | Basculer le validateur sur Haiku 4.5, **ou** passer d'un contrôle systématique à un contrôle échantillonné |
+| **10 à 25 %** | Zone d'indécision | Conserver, et remesurer au prochain élargissement de sources |
+| **> 25 %** | La contamination est fréquente | Conserver Sonnet 5 ; la sonde était généralisable |
+| **> 40 %** | Seuil d'alerte de §3 — l'instrument dérive en amont | Enquêter sur la source, pas sur le modèle |
+
+**Ce que cette décision ne remet pas en cause** : l'existence de l'étape. Le
+validateur produit aussi l'échantillon vérifiable et la pénalité de confiance,
+qui restent dus quel que soit le taux. La mesure tranche **le coût** — quel
+modèle, systématique ou échantillonné — jamais la présence du contrôle. Sans
+cette précision, la règle deviendrait une porte de sortie pour supprimer ce
+qui coûte.
+
 ## 10. Budget de jetons — à mesurer, pas à supposer
 
 Les plafonds de conception (60 k jetons en entrée, 8 k en sortie par exécution)

@@ -25,24 +25,42 @@ Un écran, trois états.
 ## 3. Structure du verdict
 
 ```
-┌──────────────────────────────────────────┐
-│  OCCUPÉ                    confiance 80 % │
-│                                          │
-│  14 paquets actifs, dont 4 maintenus     │
-│  au cours des 6 derniers mois.           │
-├──────────────────────────────────────────┤
-│  CE QUI FONDE CE VERDICT                 │
-│  • …                                     │
-├──────────────────────────────────────────┤
-│  CE QUI N'A PAS PU ÊTRE MESURÉ           │
-│  • Personne ne paie-t-il ? Non mesurable │
-│    par npm et GitHub.                    │
-│  • …                                     │
-├──────────────────────────────────────────┤
-│  ÉCHANTILLON VÉRIFIABLE                  │
-│  Les 5 premiers résultats, en clair.     │
-└──────────────────────────────────────────┘
+┌────────────────────────────────────────────────────┐
+│  OCCUPÉ                            confiance 80 %  │
+│  espace de paquets npm                             │
+│                                                    │
+│  17 paquets pertinents sur 43 remontés             │
+│  Adoption   1 paquet capte 71 % des téléchargements│
+│  Maintenance 4 maintenus, 11 abandonnés (> 24 mois)│
+│  ⚠ Le paquet dominant n'a pas publié depuis 19 mois│
+│  Bande atteignable  3 paquets, tous abandonnés     │
+├────────────────────────────────────────────────────┤
+│  CE QUI FONDE CE VERDICT                           │
+│  • …                                               │
+├────────────────────────────────────────────────────┤
+│  CE QUE NPM ET GITHUB NE VOIENT PAS                │
+│  • L'argent — aucune de ces sources ne mesure      │
+│    un revenu                                       │
+│  • Le canal de distribution — un concurrent peut   │
+│    être adoubé par un prescripteur sans trace ici  │
+│  • La barrière de confiance                        │
+│  • La friction juridique                           │
+│  npm annonçait 79 312 résultats : ce nombre n'est  │
+│  pas un comptage de l'espace.                      │
+├────────────────────────────────────────────────────┤
+│  ÉCHANTILLON VÉRIFIABLE                            │
+│  Les 5 premiers résultats, en clair.               │
+└────────────────────────────────────────────────────┘
 ```
+
+**La ligne signalée par ⚠ est le produit.** Les autres chiffres se lisent
+ailleurs ; le croisement entre adoption et maintenance, non. C'est la seule
+information qui justifie d'avoir construit l'outil plutôt que de regarder les
+dix premiers résultats.
+
+Le bloc des angles morts est **court, fixe et toujours vrai**. Quatre points,
+pas une grille à moitié vide : une fiche remplie de cases blanches serait du
+bruit déguisé en honnêteté.
 
 **L'échantillon vérifiable est obligatoire et non repliable.** Il permet à l'usager de contrôler l'instrument en dix secondes, exactement comme le contrôle qui manquait aux mesures fautives d'origine.
 
@@ -53,10 +71,15 @@ sinon il n'a pas sa place dans ce produit.*
 
 ## 4. Les trois verdicts
 
+**Les trois verdicts portent sur l'espace de paquets npm, jamais sur un
+marché.** L'interface l'écrit sous le mot, à chaque fois. Un espace de paquets
+vide n'est pas un marché vide : le concurrent qui gagne peut vendre un SaaS,
+une extension, ou une prestation — rien de tout cela ne se publie sur npm.
+
 | Verdict | Signification | Ce que l'usager en fait |
 |---|---|---|
-| **OCCUPÉ** | Acteurs actifs et maintenus | Passer, ou identifier un segment délaissé |
-| **OUVERT** | Peu d'acteurs, ou acteurs abandonnés | Creuser — mais vérifier le signal d'argent ailleurs |
+| **OCCUPÉ** | Paquets adoptés **et** maintenus | Passer, ou identifier un segment délaissé |
+| **OUVERT** | Le dominant a lâché, ou l'espace est majoritairement abandonné | Creuser — mais vérifier ailleurs les quatre points non mesurés |
 | **DÉSERT** | Presque rien, et rien n'a jamais pris | Se méfier : absence de problème, pas d'opportunité |
 
 Les seuils chiffrés qui produisent ces trois valeurs sont dans

@@ -11,7 +11,7 @@ Version 2 · statut : semaine 1 — squelette en place, boucle d'agent non écri
 | Fuite de clé API | **Élevée** | Variables d'environnement uniquement. Jamais en dépôt, jamais côté client, **jamais dans une image**. Rotation si exposition suspectée. Voir §6. |
 | Injection d'instruction par les données collectées | **Élevée** | Voir §2 — traitée à part |
 | Dépassement de budget de jetons | Moyenne | Plafond par exécution et plafond quotidien, appliqués côté serveur |
-| Épuisement des limites de débit | Moyenne | Cache des collectes récentes, temporisation exponentielle |
+| Épuisement des limites de débit | Faible | ~60 appels par exécution après la sonde du 2 août — npm en rend 1 à 2, GitHub une par paquet. Cache des collectes récentes, temporisation exponentielle |
 | Abus de l'URL publique | Moyenne | Limite par adresse IP, file d'attente |
 | Rupture d'API amont | Faible | Contrat de source isolé, dégradation gracieuse |
 

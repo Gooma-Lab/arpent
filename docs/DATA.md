@@ -14,12 +14,18 @@ Conséquence directe : **aucune donnée de client n'est hébergée**, ce qui éc
 
 ### Depuis le registre npm (public, sans authentification)
 
-| Donnée | Usage |
-|---|---|
-| Nom, description, mots-clés | Validation d'instrument |
-| Version, date de dernière publication | Signal de maintien |
-| Dépôt lié | Jointure avec GitHub |
-| Licence | Contexte |
+Tout ce qui suit vient d'un **unique appel de recherche**, vérifié le 2 août
+2026. Aucun appel supplémentaire par paquet n'est nécessaire côté npm.
+
+| Donnée | Champ | Usage |
+|---|---|---|
+| Nom, description, mots-clés | `package.*` | Validation d'instrument |
+| Date de dernière publication | `package.date` | Signal de maintien |
+| Dépôt lié | `package.links.repository` | Jointure avec GitHub |
+| Licence | `package.license` | Contexte |
+| **Téléchargements hebdomadaires** | `downloads.weekly` | Adoption — biaisé par la CI et les miroirs |
+| **Paquets dépendants** | `dependents` | Encastrement réel, moins biaisé que les téléchargements |
+| Total annoncé | `total` | **Aucun** — voir §5, règle 3 |
 
 ### Depuis l'API GitHub (clé gratuite, 5 000 requêtes/heure)
 
@@ -69,9 +75,28 @@ Trois règles héritées d'erreurs réelles commises pendant la phase d'explorat
 
 **Règle 1 — un zéro n'est pas une note.** Certaines API renvoient `0` pour « aucune évaluation » plutôt que d'omettre le champ. Agréger ces zéros produit une moyenne effondrée et une conclusion inverse de la réalité. Tout champ numérique optionnel est vérifié pour distinguer l'absence de la valeur nulle.
 
-**Règle 2 — la recherche textuelle porte souvent sur la description.** Une requête peut donc remonter des éléments sans rapport, simplement parce que le terme figure dans une présentation. D'où la validation d'instrument obligatoire.
+**Règle 2 — la recherche npm porte aussi sur la description.** Vérifié le
+2 août 2026 : la requête `wiki` remonte `@aws-crypto/crc32` (34 millions de
+téléchargements hebdomadaires) parce qu'une URL Wikipédia figure dans sa
+description. Trois des huit premiers résultats sont hors sujet, et ce sont les
+plus téléchargés de deux ordres de grandeur.
 
-**Règle 3 — la pagination plafonne.** Certaines API annoncent un total très supérieur à ce qu'elles laissent effectivement parcourir. Le nombre réellement récupéré est toujours enregistré à côté du total annoncé, et l'écart apparaît dans les angles morts du verdict.
+Cette règle était auparavant énoncée comme une généralité — « la recherche
+textuelle porte *souvent* sur la description » — à partir d'un incident unique
+sur une autre plateforme. Elle est maintenant une observation datée sur la
+source réelle, et c'est ce qui rend la validation d'instrument obligatoire
+plutôt que prudente : sur une mesure de distribution, ces trois intrus
+n'entachent pas le résultat, ils l'inversent.
+
+**Règle 3 — un total annoncé n'est pas un comptage.** La règle disait que la
+pagination plafonne ; le défaut réel est plus grave. La recherche npm annonce
+**1 211 183** résultats pour « outils de mock pour tests d'API GraphQL », parce
+qu'elle compte les paquets touchant un des mots. Ce nombre n'a aucun rapport
+avec la taille de l'espace.
+
+Il n'entre donc dans aucun calcul. Le comptage vient exclusivement de
+l'échantillon validé, et l'écart entre les deux est affiché dans les angles
+morts — comme une limite d'instrument, pas comme une information.
 
 ## 6. Ce que les données ne peuvent pas dire
 

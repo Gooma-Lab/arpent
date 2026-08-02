@@ -26,7 +26,11 @@ class Limits(BaseModel):
     """
 
     max_packages: int = 40
-    max_http_calls: int = 250
+    # Revised down from 250 after the 2026-08-02 probe: npm search returns
+    # downloads, dependents, the publish date and the repository URL in a
+    # single call, so the npm side costs 1-2 calls rather than one per package.
+    # What remains is GitHub enrichment, one call per package.
+    max_http_calls: int = 60
     max_concurrency: int = 8
     max_replans: int = 2
     max_input_tokens: int = 60_000

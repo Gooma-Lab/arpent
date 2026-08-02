@@ -55,11 +55,21 @@ Demande en langage naturel
 [5] SYNTHÉTISER          (modèle) ── verdict + confiance + angles morts
 ```
 
-**L'étape 3 est le cœur du projet.** Elle est née d'un échec réel : une requête portant sur les wikis remontait des extracteurs de réseaux sociaux, parce que la recherche portait aussi sur les descriptions. Le défaut était détectable en dix secondes — il suffisait de regarder un échantillon.
+**L'étape 3 est le cœur du projet, et sa nécessité est mesurée.**
+
+Elle a d'abord été motivée par un incident isolé sur une place de marché hors périmètre — une requête sur les wikis y remontait des extracteurs de réseaux sociaux. Un cas unique ne justifie pas le composant le plus coûteux du système, et cette justification était trop faible.
+
+Elle a été refaite sur la source réelle. Sonde du 2 août 2026, requête `wiki` sur npm : trois des huit premiers résultats sont hors sujet — `@aws-crypto/crc32`, `@aws-crypto/crc32c`, `@wry/trie` — remontés parce qu'une URL Wikipédia figure dans leur description. Ce sont aussi les plus téléchargés, de deux ordres de grandeur au-dessus du seul vrai paquet wiki.
+
+**C'est ce qui rend la validation obligatoire plutôt que prudente.** Dans un verdict binaire, un intrus pèse peu. Dans une analyse de distribution, ces trois-là inversent la conclusion : ils font croire à un espace massivement adopté là où il y a 736 téléchargements par semaine. La validation d'instrument n'est pas une précaution ajoutée au produit, c'est **une condition de validité de sa mesure principale**.
 
 L'agent fait donc systématiquement ce contrôle, et **replanifie s'il constate une dérive**. C'est de l'auto-évaluation, et c'est ce qui distingue ce projet d'un extracteur.
 
 Garde-fou : deux replanifications au maximum. Au-delà, le verdict est rendu avec une confiance dégradée et le motif explicite.
+
+**Ce que la sonde n'établit pas** : la *fréquence* de la contamination. Quatre requêtes ne mesurent pas un taux. Le taux de replanification observé en semaine 9 sur le jeu de cas de référence le donnera, et il porte une décision écrite d'avance — voir `DELIVERY.md` §12.
+
+**L'étape 1 est plus déterminante qu'annoncé.** La même sonde montre qu'une requête en français dégrade nettement les résultats : `outils de mock pour tests d'API GraphQL` remonte `@gouvfr/dsfr-kit`, système de design de l'État français, parce que sa description est en français. Le planificateur ne « sélectionne pas des termes » : il **traduit une intention en mots-clés anglais**. C'est là que la qualité du produit se joue, et c'est testable isolément.
 
 ## 4. Sources enfichables — deux rôles, pas un contrat unique
 
@@ -98,7 +108,20 @@ il n'y a plus rien à mesurer.
 Correspondance avec les identifiants du code : voir `GLOSSARY.md` §1.
 
 **Sources v1** : registre npm (public, sans clé), API GitHub (clé gratuite, 5 000 requêtes/heure).
-**Source v2** : France Travail (API publique) — apporte le signal d'argent absent de la v1.
+
+**Ce que la recherche npm rend réellement**, vérifié le 2 août 2026 — un seul appel, par paquet :
+
+```
+package      : name, description, keywords, license, version, date, links
+links        : repository, homepage, bugs, npm
+hors package : downloads{weekly, monthly}, dependents, score, updated
+```
+
+Conséquence sur la conception : **le côté npm d'une exécution coûte 1 à 2 appels HTTP, pas un par paquet.** La date de dernière publication, les téléchargements et l'URL du dépôt sont déjà là. Le plafond de 250 appels avait été dimensionné pour une architecture inutile — il descend à ~60.
+
+`dependents` n'avait pas été envisagé et mérite d'être mesuré : il compte les paquets qui dépendent de celui-ci, donc l'encastrement réel, là où les téléchargements incluent l'intégration continue et les miroirs.
+
+**Source v2** : France Travail (API publique) — apporte le signal d'argent absent de la v1. C'est la **seule source d'emploi ayant été vérifiée** : l'APEC n'expose pas d'API publique, et les autres n'ont pas été examinées. À reprendre au moment de la v2 plutôt qu'à considérer comme tranché.
 
 Ajouter une source ne modifie que son connecteur. C'est ce qui permet à la v2 d'exister sans refonte.
 
