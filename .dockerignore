@@ -1,0 +1,39 @@
+# Written before the Dockerfile, on purpose.
+#
+# .gitignore does not protect a build context. A `COPY . .` would bake .env
+# into the image, and that image is published to a public Space. Anyone who
+# pulls it can read the layer.
+#
+# Secrets reach the container through the platform's own secret store —
+# Hugging Face: Settings > Variables and secrets — never through the image.
+
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+.git/
+.github/
+.venv/
+venv/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Runtime output and local traces
+data/
+*.jsonl
+!evals/cases/*.jsonl
+
+# Not needed at runtime
+docs/
+tests/
+evals/
+*.md
+!README.md

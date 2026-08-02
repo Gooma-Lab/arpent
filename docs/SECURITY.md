@@ -8,7 +8,7 @@ Version 2 · statut : semaine 1 — squelette en place, boucle d'agent non écri
 
 | Risque | Gravité | Couverture |
 |---|---|---|
-| Fuite de clé API | **Élevée** | Variables d'environnement uniquement. Jamais en dépôt, jamais côté client. Rotation si exposition suspectée. |
+| Fuite de clé API | **Élevée** | Variables d'environnement uniquement. Jamais en dépôt, jamais côté client, **jamais dans une image**. Rotation si exposition suspectée. Voir §6. |
 | Injection d'instruction par les données collectées | **Élevée** | Voir §2 — traitée à part |
 | Dépassement de budget de jetons | Moyenne | Plafond par exécution et plafond quotidien, appliqués côté serveur |
 | Épuisement des limites de débit | Moyenne | Cache des collectes récentes, temporisation exponentielle |
@@ -96,7 +96,28 @@ L'URL est publique et rattachée à un profil professionnel. Deux conséquences 
 
 C'est le même raisonnement que celui appliqué à l'approche commerciale : un outil qui annonce ses limites est plus crédible qu'un outil qui prétend trancher.
 
-## 6. Ce qui n'est pas couvert en v1
+## 6. Chaîne de confinement des secrets
+
+Quatre barrières, chacune couvrant une voie de fuite distincte. Aucune ne
+remplace les autres.
+
+| Barrière | Ce qu'elle empêche | État |
+|---|---|---|
+| `.gitignore` | Que `.env` soit commité | En place, vérifié sur l'historique complet |
+| Barrière CI n°3 (gitleaks) | Qu'une clé écrite en dur passe en revue | En place |
+| `.dockerignore` | Que `.env` soit cuit dans une couche d'image publique | **En place avant le `Dockerfile`** — le `.gitignore` ne protège pas un contexte de build |
+| `arpent --check` | Qu'une valeur s'affiche à l'écran ou dans l'historique du terminal | En place — la commande rapporte la présence, jamais la valeur |
+
+**En production, les secrets viennent du magasin de la plateforme**, jamais du
+dépôt ni de l'image : sur Hugging Face, *Settings → Variables and secrets*,
+injectés comme variables d'environnement au démarrage du conteneur.
+
+**Si une clé est exposée**, l'ordre est : révoquer d'abord, comprendre ensuite.
+Une clé Anthropic se révoque depuis la console, un jeton GitHub depuis les
+réglages du compte. Réécrire l'historique git ne suffit pas — ce qui a été
+poussé une fois doit être considéré comme public.
+
+## 7. Ce qui n'est pas couvert en v1
 
 - Pas d'authentification, donc pas de gestion de comptes ni de mots de passe — assumé
 - Pas de chiffrement au repos : aucune donnée sensible n'est stockée
