@@ -106,7 +106,7 @@ remplace les autres.
 | `.gitignore` | Que `.env` soit commité | En place, vérifié sur l'historique complet |
 | Barrière CI n°3 (gitleaks) | Qu'une clé écrite en dur passe en revue | En place |
 | `.dockerignore` | Que `.env` soit cuit dans une couche d'image publique | **En place avant le `Dockerfile`** — le `.gitignore` ne protège pas un contexte de build |
-| `arpent --check` | Qu'une valeur s'affiche à l'écran ou dans l'historique du terminal | En place — la commande rapporte la présence, jamais la valeur |
+| `arpent check` + `SecretStr` | Qu'une valeur s'affiche à l'écran ou dans l'historique du terminal | En place — la commande rapporte la présence, jamais la valeur, et les identifiants sont typés `SecretStr` : afficher l'objet de configuration montre des astérisques |
 
 **En production, les secrets viennent du magasin de la plateforme**, jamais du
 dépôt ni de l'image : sur Hugging Face, *Settings → Variables and secrets*,

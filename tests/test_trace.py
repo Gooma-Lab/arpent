@@ -3,13 +3,20 @@
 from __future__ import annotations
 
 import json
-from datetime import date, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 import pytest
 
 from arpent.pricing import TokenUsage
-from arpent.trace import CallRecord, RunRecord, Trace, purge, read_records
+from arpent.trace import (
+    CallRecord,
+    RunRecord,
+    Trace,
+    purge,
+    read_records,
+    utc_today,
+)
 
 
 @pytest.fixture
@@ -96,8 +103,8 @@ def test_a_corrupt_line_is_skipped_rather_than_fatal(traces: Path) -> None:
 
 def test_purge_removes_only_what_is_past_retention(traces: Path) -> None:
     traces.mkdir(parents=True)
-    old = traces / f"{(date.today() - timedelta(days=120)).isoformat()}.jsonl"
-    recent = traces / f"{date.today().isoformat()}.jsonl"
+    old = traces / f"{(utc_today() - timedelta(days=120)).isoformat()}.jsonl"
+    recent = traces / f"{utc_today().isoformat()}.jsonl"
     old.write_text("")
     recent.write_text("")
 
@@ -106,6 +113,23 @@ def test_purge_removes_only_what_is_past_retention(traces: Path) -> None:
     assert removed == [old]
     assert not old.exists()
     assert recent.exists()
+
+
+def test_retention_is_measured_in_the_same_clock_as_the_filenames(
+    traces: Path,
+) -> None:
+    """Files are named after the UTC date of the run.
+
+    Comparing them against a local ``date.today()`` would purge or skip a
+    day's traces around midnight — silently, and only for developers outside
+    UTC. The boundary file must survive.
+    """
+    traces.mkdir(parents=True)
+    boundary = traces / f"{(utc_today() - timedelta(days=90)).isoformat()}.jsonl"
+    boundary.write_text("")
+
+    assert purge(traces, retention_days=90) == []
+    assert boundary.exists()
 
 
 def test_reading_an_absent_directory_is_not_an_error(tmp_path: Path) -> None:

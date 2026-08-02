@@ -8,11 +8,11 @@ code. This module is how that line gets replaced by a measurement.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 from arpent.pricing import min_cacheable_tokens
-from arpent.trace import CallRecord, RunRecord, read_records
+from arpent.trace import CallRecord, RunRecord, read_records, utc_today
 
 
 @dataclass
@@ -62,7 +62,7 @@ class CostReport:
 
 
 def build_report(directory: Path, days: int | None = None) -> CostReport:
-    since = date.today() - timedelta(days=days) if days is not None else None
+    since = utc_today() - timedelta(days=days) if days is not None else None
     records = read_records(directory, since=since)
 
     buckets: dict[tuple[str, str], StepTotals] = {}

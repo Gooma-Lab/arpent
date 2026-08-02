@@ -77,10 +77,13 @@ of truth; this README is the summary.
 
 ```bash
 uv sync --all-groups
-uv run arpent --check
+uv run arpent check
 uv run pytest
 uv run ruff check .
 ```
+
+`arpent cost` breaks recorded traces down by step and model. `arpent purge`
+drops traces past the retention window.
 
 `uv` reads `.python-version` and installs the pinned interpreter itself. A test
 fails loudly if the running interpreter is not 3.12 — drift between development

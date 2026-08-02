@@ -64,6 +64,17 @@ def _now() -> datetime:
     return datetime.now(UTC)
 
 
+def utc_today() -> date:
+    """Today in UTC.
+
+    Trace files are named after the UTC date of the run, so every comparison
+    against those names must use UTC too. ``date.today()`` is local, and the
+    mismatch would purge or skip a day's worth of traces near midnight —
+    silently, and only for developers outside UTC.
+    """
+    return _now().date()
+
+
 class Trace:
     """Collects the records of a single run and appends them to a JSONL file.
 
@@ -188,7 +199,7 @@ def purge(directory: Path, retention_days: int) -> list[Path]:
     if not directory.exists():
         return []
 
-    cutoff = date.today() - timedelta(days=retention_days)
+    cutoff = utc_today() - timedelta(days=retention_days)
     removed: list[Path] = []
     for path in sorted(directory.glob("*.jsonl")):
         try:
