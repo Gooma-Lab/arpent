@@ -59,11 +59,20 @@ règle de `DESIGN.md` §6, et les deux documents disaient l'inverse l'un de
 l'autre jusqu'à cette correction. Un refus sec est un échec silencieux
 déguisé — l'usager ne sait pas ce qui a été mesuré avant l'arrêt.
 
-**Budget du projet 1** : **30 à 50 $**, révisé à la hausse pour deux raisons.
-Le validateur tourne sur Sonnet 5 et non sur le modèle économique — c'est
-l'étape qui porte la valeur du projet. Et le tarif de Sonnet 5 à 2 $/10 $ est
-**promotionnel jusqu'au 31 août 2026** : les semaines 5 à 12 seront facturées
-3 $/15 $, soit 50 % de plus. Prépaiement à prévoir : **50 $**.
+**Budget du projet 1** : **~15 $**, soit environ 115 exécutions réelles à
+0,13 $. Voir `DELIVERY.md` §10 pour la ventilation et la règle
+d'enregistrement/rejeu qui la rend atteignable.
+
+Deux facteurs tirent à la hausse et sont déjà intégrés : le validateur tourne
+sur Sonnet 5 et non sur le modèle économique, et le tarif de Sonnet 5 à
+2 $/10 $ est **promotionnel jusqu'au 31 août 2026** — les semaines 5 à 12
+seront facturées 3 $/15 $.
+
+**Prépaiement : 20 $, rechargeable.** Jamais 50 d'un coup. La contrainte
+personnelle est de 100 € engagés avant le premier euro encaissé ; immobiliser
+la moitié de ce plafond sur une estimation non mesurée serait déraisonnable.
+Le plafond quotidien de 1 $ borne le pire cas, et la mesure de la semaine 2
+arrive **avant** le gros des dépenses.
 
 **Budget total** : 65 à 150 $ sur quatre mois, tous projets confondus. Le poste dominant n'est pas l'agent mais la suite d'évaluation du projet 2, qui rejoue les mêmes cas des dizaines de fois.
 

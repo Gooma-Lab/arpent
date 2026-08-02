@@ -75,7 +75,7 @@ semaine de diffusion est le schéma d'échec classique.
 | 1 | 6 h | 4 h | — | Comptes, dépôt, licence, Python 3.12, `uv`, `ruff`, `pytest`, CI verte |
 | 2 | 6 h | 4 h | — | Pydantic, HTTP, premier appel modèle, trace JSONL, **comptabilité de jetons par étape** (entrée, sortie, écritures et lectures de cache, coût) — voir §10 |
 | 3 | 8 h | 2 h | — | Interface fournisseur, routage par variables d'environnement |
-| 4 | 9 h | 1 h | — | Connecteur npm, les trois règles de `DATA.md` §5 testées |
+| 4 | 9 h | 1 h | — | Connecteur npm, les trois règles de `DATA.md` §5 testées, **enregistrement/rejeu des réponses d'API** — voir §11 |
 | 5 | 8 h | 1 h | 1 h | **Boucle complète, npm seul, en CLI** + première note publique |
 | 6 | 9 h | — | 1 h | **URL PUBLIQUE** — Docker, Space, UI minimale ⟵ *point de contrôle* |
 | 7 | 9 h | — | 1 h | Validation d'instrument et replanification, étapes en direct |
@@ -207,3 +207,42 @@ l'API ne signale rien — il faut lire `cache_creation_input_tokens` et
 `cache_read_input_tokens` dans la réponse pour le constater. La comptabilité de
 la semaine 2 doit donc enregistrer ces deux champs, faute de quoi on croira
 utiliser un cache inexistant.
+
+## 11. Budget financier — le levier est le nombre d'exécutions
+
+La première estimation, 30 à 50 $, reposait sur ~250 exécutions réelles.
+**C'est cette hypothèse qui était mauvaise, pas le choix du modèle.** Changer
+de fournisseur ferait économiser environ 12 $ au prix de la cohérence avec le
+projet 3 et du sujet même du projet 2 ; réduire le nombre d'appels vivants fait
+économiser davantage sans rien coûter.
+
+| Période | Exécutions réelles | Pourquoi si peu |
+|---|---|---|
+| S1-S4 | ~20 | Le connecteur npm se teste sur fixtures, pas sur le réseau |
+| S5 — la boucle | ~30 | Le seul bloc qui exige des appels vivants |
+| S6-S8 | ~15 | Déploiement, interface et connecteur GitHub rejouent des réponses stockées |
+| S9 — calibrage | ~20 | **Les seuils sont déterministes** : un échantillon validé par cas suffit, on rejoue ensuite les seuils sur les données stockées gratuitement |
+| S10-S12 | ~30 | Diffusion et usage réel |
+| **Total** | **~115** | **≈ 15 $ à 0,13 $ l'exécution** |
+
+**Règle d'enregistrement/rejeu, à mettre en place dès la semaine 4.** Toute
+réponse d'API — npm, GitHub, modèle — est enregistrable et rejouable depuis le
+disque. Le développement tourne sur les enregistrements ; les appels vivants
+sont réservés à ce qui les exige.
+
+Ce n'est pas une économie de bout de chandelle, c'est le mécanisme dont la
+suite d'évaluation du projet 2 a besoin de toute façon. Il est simplement
+construit plus tôt.
+
+**Échelle de repli**, si la mesure de la semaine 2 donne un coût par exécution
+supérieur à l'estimation :
+
+1. Validateur sur Haiku 4.5 **pendant le développement uniquement** — la
+   configuration déployée et la ligne de référence des évaluations restent sur
+   Sonnet 5. L'artefact public tourne sur la bonne configuration.
+2. Réduire l'échantillon soumis au validateur de 40 à 10 éléments.
+3. Réduire le nombre de cas de calibrage de 15 à 10.
+
+**Ce qui n'est jamais sacrifié au budget** : le validateur de la configuration
+déployée. C'est l'étape qui porte la valeur du projet ; l'économiser reviendrait
+à supprimer ce qu'on cherche à démontrer.

@@ -23,10 +23,7 @@ jobs:
         uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
-          # No uv.lock yet — it appears the first time `uv sync` runs locally,
-          # and should be committed then. Until it exists the cache keys off
-          # the manifest instead.
-          cache-dependency-glob: "pyproject.toml"
+          cache-dependency-glob: "uv.lock"
 
       - name: Install the pinned interpreter and dependencies
         run: uv sync --all-groups
