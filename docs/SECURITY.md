@@ -47,14 +47,26 @@ Un paquet malveillant peut contenir, dans sa description, une phrase du type *«
 
 Le seul poste de dépense est l'appel aux modèles.
 
-| Mesure | Détail |
-|---|---|
-| Plafond par exécution | 60 k jetons en entrée, 8 k en sortie. Au-delà, l'exécution s'arrête et rend un **verdict partiel portant la mention de troncature** — jamais un refus sec |
-| Plafond quotidien | 1,00 $, coupure automatique, pas d'alerte seule |
-| Alerte de consommation | Notification à 50 % et 80 % du budget mensuel |
-| Facturation prépayée | Pas de prélèvement automatique illimité |
+La colonne **État** dit ce qui est appliqué par du code aujourd'hui et ce qui
+est seulement décidé. Un document qui annonce au présent une protection
+inexistante est pire qu'un document qui se tait : il fait croire qu'on est
+couvert.
 
-Le plafond par exécution rend un verdict partiel et non un refus : c'est la
+| Mesure | Détail | État |
+|---|---|---|
+| Plafond par exécution | 60 k jetons en entrée, 8 k en sortie. Au-delà, l'exécution s'arrête et rend un **verdict partiel portant la mention de troncature** — jamais un refus sec | **Décidé, non appliqué.** Les valeurs vivent dans `config.Limits` ; aucun code ne les consulte encore. Câblage en semaine 5, avec la boucle |
+| Plafond quotidien | 1,00 $, coupure automatique, pas d'alerte seule | **Décidé, non appliqué.** `report.build_report(days=1)` fournit déjà l'agrégat ; il reste à en faire une barrière |
+| Alerte de consommation | Notification à 50 % et 80 % du budget mensuel | **Décidé, non appliqué.** Semaine 11 |
+| Facturation prépayée | Pas de prélèvement automatique illimité | **En place.** 20 $ prépayés, limite mensuelle sur l'espace de travail |
+| Comptabilité par appel | Jetons d'entrée, de sortie, d'écriture et de lecture de cache, et coût, enregistrés à chaque appel | **En place.** `trace.py`, restitué par `arpent cost` |
+| Prix inconnu | Un modèle sans prix connu lève une erreur au lieu de coûter zéro | **En place.** `pricing.price_for` |
+
+**La seule barrière financière réellement active aujourd'hui est le
+prépaiement.** C'est peu, mais c'est la plus solide des quatre : elle ne
+dépend d'aucun code et son pire cas est borné par le montant déposé. Les trois
+autres restent des décisions tant que la boucle n'existe pas.
+
+Le plafond par exécution rendra un verdict partiel et non un refus : c'est la
 règle de `DESIGN.md` §6, et les deux documents disaient l'inverse l'un de
 l'autre jusqu'à cette correction. Un refus sec est un échec silencieux
 déguisé — l'usager ne sait pas ce qui a été mesuré avant l'arrêt.
